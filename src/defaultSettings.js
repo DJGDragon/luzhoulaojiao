@@ -6,6 +6,6 @@ module.exports = {
   fixedHeader: true,
   autoHideHeader: false,
   fixSiderbar: false,
-  title: 'Ant Design Pro',
+  title: '泸州老窖展馆视频管理系统',
   collapse: true,
 };

@@ -10,6 +10,6 @@ describe('Homepage', () => {
       timeout: 5000,
     });
     const text = await page.evaluate(() => document.getElementsByTagName('h1')[0].innerText);
-    expect(text).toContain('Ant Design Pro');
+    expect(text).toContain('泸州老窖展馆视频管理系统');
   });
 });

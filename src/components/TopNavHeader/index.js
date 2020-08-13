@@ -4,7 +4,7 @@ import RightContent from '../GlobalHeader/RightContent';
 import BaseMenu from '../SiderMenu/BaseMenu';
 import { getFlatMenuKeys } from '../SiderMenu/SiderMenuUtils';
 import styles from './index.less';
-
+import { Divider, Icon } from 'antd';
 export default class TopNavHeader extends PureComponent {
   state = {
     maxWidth: undefined,
@@ -32,7 +32,7 @@ export default class TopNavHeader extends PureComponent {
             <div className={styles.logo} key="logo" id="logo">
               <Link to="/">
                 <img src={logo} alt="logo" />
-                <h1>Ant Design Pro</h1>
+                {/* <h1>Ant Design Pro</h1> */}
               </Link>
             </div>
             <div
@@ -43,7 +43,15 @@ export default class TopNavHeader extends PureComponent {
               <BaseMenu {...this.props} flatMenuKeys={flatMenuKeys} className={styles.menu} />
             </div>
           </div>
-          <RightContent {...this.props} />
+          <div className={styles.rightContent}>
+            <span className={styles.time}>当前时间：{new Date().toLocaleTimeString()}</span>
+            <span className={styles.name}>admin</span>
+            <Divider type="vertical" />
+            <span className={styles.out}>退出</span>
+            <Icon  className={styles.icon} type="caret-right" theme="filled" />
+          </div>
+          
+          {/* <RightContent {...this.props} /> */}
         </div>
       </div>
     );

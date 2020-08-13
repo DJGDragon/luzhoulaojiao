@@ -35,4 +35,6 @@ export default {
   'menu.account.settings': '个人设置',
   'menu.account.trigger': '触发报错',
   'menu.account.logout': '退出登录',
+  'menu.play': '视频播放',
+  'menu.manage': '视频管理',
 };
