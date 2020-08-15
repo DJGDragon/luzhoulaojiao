@@ -1,4 +1,5 @@
-import { queryRule, removeRule, addRule, updateRule } from '@/services/api';
+import { queryRule, removeRule, updateRule } from '@/services/api';
+import { queryVideo, submitVideo } from '@/services/video';
 
 export default {
   namespace: 'video',
@@ -12,14 +13,14 @@ export default {
 
   effects: {
     *fetch({ payload }, { call, put }) {
-      const response = yield call(queryRule, payload);
+      const response = yield call(queryVideo, payload);
       yield put({
         type: 'save',
         payload: response,
       });
     },
-    *add({ payload, callback }, { call, put }) {
-      const response = yield call(addRule, payload);
+    *submit({ payload, callback }, { call, put }) {
+      const response = yield call(submitVideo, payload);
       yield put({
         type: 'save',
         payload: response,
@@ -36,6 +37,22 @@ export default {
     },
     *update({ payload, callback }, { call, put }) {
       const response = yield call(updateRule, payload);
+      yield put({
+        type: 'save',
+        payload: response,
+      });
+      if (callback) callback();
+    },
+    *delete({ payload, callback }, { call, put }) {
+      const response = yield call(queryVideo, payload);
+      yield put({
+        type: 'save',
+        payload: response,
+      });
+      if (callback) callback();
+    },
+    *empty({ payload, callback }, { call, put }) {
+      const response = yield call(queryVideo, payload);
       yield put({
         type: 'save',
         payload: response,

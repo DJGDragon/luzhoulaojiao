@@ -1,4 +1,5 @@
 import mockjs from 'mockjs';
+import { parse } from 'url';
 
 const titles = [
   'Alipay',
@@ -321,6 +322,35 @@ function getFakeCaptcha(req, res) {
   return res.json('captcha-xxx');
 }
 
+
+
+
+let getVideoQuery = [];
+for (let i = 1; i < 46; i += 1) {
+  getVideoQuery.push({
+    key: i,
+    order: `${i}`,
+    name: `广告视频${i}`,
+    duration: `00:02:30${i}`,
+    upload_time: `2020-07-23 12:23:0${i}`,
+  });
+}
+
+
+const VideoQueryData={
+  list: getVideoQuery,
+  pagination: {
+    total: getVideoQuery.length,
+    pageSize:10,
+    current: 1,
+  },
+}
+const getVideoSubmit = {
+  'success':true,
+  'msg':'添加成功',
+  ...VideoQueryData
+}
+
 export default {
   'GET /api/project/notice': getNotice,
   'GET /api/activities': getActivities,
@@ -333,4 +363,6 @@ export default {
   'GET /api/fake_list': getFakeList,
   'POST /api/fake_list': postFakeList,
   'GET /api/captcha': getFakeCaptcha,
+  'POST /api/video/submit': getVideoSubmit,
+  'POST /api/video/query': VideoQueryData,
 };

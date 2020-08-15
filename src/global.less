@@ -31,3 +31,39 @@ ul,
 ol {
   list-style: none;
 }
+:global {
+.ant-form-item-label > label.ant-form-item-no-colon::before {
+  display: none;
+}
+
+.ant-form-item-required::after {
+  display: inline-block;
+  margin-right: 4px;
+  color: #ff517d;
+  font-size: 14px;
+  font-family: SimSun, sans-serif;
+  line-height: 1;
+  content: '*' !important;
+}
+
+.ant-modal-footer > div,.ant-modal-confirm-btns {
+  height: 32px;
+  > button:first-child {
+    float: right;
+    left: 8px;
+  }
+}
+.ant-modal > .ant-modal-content {
+  border: 1px solid @primary-color;
+  border-radius:2px;
+  .ant-modal-close-x{
+    color: @primary-color;
+  }
+  .ant-modal-header{
+    .ant-modal-title{
+      color: @primary-color;
+    }
+    border-radius:1px;
+  }
+} 
+}
