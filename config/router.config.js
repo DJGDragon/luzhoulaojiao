@@ -10,6 +10,12 @@ export default [
       { path: '/user/register-result', component: './User/RegisterResult' },
     ],
   },
+  // user
+    {
+      path: '/index',
+      component: './Element/index',
+
+    },
   // app
   {
     path: '/',

@@ -25,252 +25,15 @@ import StandardTable from '@/components/StandardTable';
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
 
 import styles from './TableList.less';
+import UploadForm from './UploadForm';
+import PreviewForm from './PreviewForm';
 
 const FormItem = Form.Item;
 const { Step } = Steps;
 const { TextArea } = Input;
 const { Option } = Select;
 const RadioGroup = Radio.Group;
-const getValue = obj =>
-  Object.keys(obj)
-    .map(key => obj[key])
-    .join(',');
-const statusMap = ['default', 'processing', 'success', 'error'];
-const status = ['关闭', '运行中', '已上线', '异常'];
 
-const CreateForm = Form.create()(props => {
-  const { modalVisible, form, handleAdd, handleModalVisible } = props;
-  const okHandle = () => {
-    form.validateFields((err, fieldsValue) => {
-      if (err) return;
-      form.resetFields();
-      handleAdd(fieldsValue);
-    });
-  };
-  return (
-    <Modal
-      destroyOnClose
-      title="新建规则"
-      visible={modalVisible}
-      onOk={okHandle}
-      onCancel={() => handleModalVisible()}
-    >
-      <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="描述">
-        {form.getFieldDecorator('desc', {
-          rules: [{ required: true, message: '请输入至少五个字符的规则描述！', min: 5 }],
-        })(<Input placeholder="请输入" />)}
-      </FormItem>
-    </Modal>
-  );
-});
-
-@Form.create()
-class UpdateForm extends PureComponent {
-  static defaultProps = {
-    handleUpdate: () => {},
-    handleUpdateModalVisible: () => {},
-    values: {},
-  };
-
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      formVals: {
-        name: props.values.name,
-        desc: props.values.desc,
-        key: props.values.key,
-        target: '0',
-        template: '0',
-        type: '1',
-        time: '',
-        frequency: 'month',
-      },
-      currentStep: 0,
-    };
-
-    this.formLayout = {
-      labelCol: { span: 7 },
-      wrapperCol: { span: 13 },
-    };
-  }
-
-  handleNext = currentStep => {
-    const { form, handleUpdate } = this.props;
-    const { formVals: oldValue } = this.state;
-    form.validateFields((err, fieldsValue) => {
-      if (err) return;
-      const formVals = { ...oldValue, ...fieldsValue };
-      this.setState(
-        {
-          formVals,
-        },
-        () => {
-          if (currentStep < 2) {
-            this.forward();
-          } else {
-            handleUpdate(formVals);
-          }
-        }
-      );
-    });
-  };
-
-  backward = () => {
-    const { currentStep } = this.state;
-    this.setState({
-      currentStep: currentStep - 1,
-    });
-  };
-
-  forward = () => {
-    const { currentStep } = this.state;
-    this.setState({
-      currentStep: currentStep + 1,
-    });
-  };
-
-  renderContent = (currentStep, formVals) => {
-    const { form } = this.props;
-    if (currentStep === 1) {
-      return [
-        <FormItem key="target" {...this.formLayout} label="监控对象">
-          {form.getFieldDecorator('target', {
-            initialValue: formVals.target,
-          })(
-            <Select style={{ width: '100%' }}>
-              <Option value="0">表一</Option>
-              <Option value="1">表二</Option>
-            </Select>
-          )}
-        </FormItem>,
-        <FormItem key="template" {...this.formLayout} label="规则模板">
-          {form.getFieldDecorator('template', {
-            initialValue: formVals.template,
-          })(
-            <Select style={{ width: '100%' }}>
-              <Option value="0">规则模板一</Option>
-              <Option value="1">规则模板二</Option>
-            </Select>
-          )}
-        </FormItem>,
-        <FormItem key="type" {...this.formLayout} label="规则类型">
-          {form.getFieldDecorator('type', {
-            initialValue: formVals.type,
-          })(
-            <RadioGroup>
-              <Radio value="0">强</Radio>
-              <Radio value="1">弱</Radio>
-            </RadioGroup>
-          )}
-        </FormItem>,
-      ];
-    }
-    if (currentStep === 2) {
-      return [
-        <FormItem key="time" {...this.formLayout} label="开始时间">
-          {form.getFieldDecorator('time', {
-            rules: [{ required: true, message: '请选择开始时间！' }],
-          })(
-            <DatePicker
-              style={{ width: '100%' }}
-              showTime
-              format="YYYY-MM-DD HH:mm:ss"
-              placeholder="选择开始时间"
-            />
-          )}
-        </FormItem>,
-        <FormItem key="frequency" {...this.formLayout} label="调度周期">
-          {form.getFieldDecorator('frequency', {
-            initialValue: formVals.frequency,
-          })(
-            <Select style={{ width: '100%' }}>
-              <Option value="month">月</Option>
-              <Option value="week">周</Option>
-            </Select>
-          )}
-        </FormItem>,
-      ];
-    }
-    return [
-      <FormItem key="name" {...this.formLayout} label="规则名称">
-        {form.getFieldDecorator('name', {
-          rules: [{ required: true, message: '请输入规则名称！' }],
-          initialValue: formVals.name,
-        })(<Input placeholder="请输入" />)}
-      </FormItem>,
-      <FormItem key="desc" {...this.formLayout} label="规则描述">
-        {form.getFieldDecorator('desc', {
-          rules: [{ required: true, message: '请输入至少五个字符的规则描述！', min: 5 }],
-          initialValue: formVals.desc,
-        })(<TextArea rows={4} placeholder="请输入至少五个字符" />)}
-      </FormItem>,
-    ];
-  };
-
-  renderFooter = currentStep => {
-    const { handleUpdateModalVisible, values } = this.props;
-    if (currentStep === 1) {
-      return [
-        <Button key="back" style={{ float: 'left' }} onClick={this.backward}>
-          上一步
-        </Button>,
-        <Button key="cancel" onClick={() => handleUpdateModalVisible(false, values)}>
-          取消
-        </Button>,
-        <Button key="forward" type="primary" onClick={() => this.handleNext(currentStep)}>
-          下一步
-        </Button>,
-      ];
-    }
-    if (currentStep === 2) {
-      return [
-        <Button key="back" style={{ float: 'left' }} onClick={this.backward}>
-          上一步
-        </Button>,
-        <Button key="cancel" onClick={() => handleUpdateModalVisible(false, values)}>
-          取消
-        </Button>,
-        <Button key="submit" type="primary" onClick={() => this.handleNext(currentStep)}>
-          完成
-        </Button>,
-      ];
-    }
-    return [
-      <Button key="cancel" onClick={() => handleUpdateModalVisible(false, values)}>
-        取消
-      </Button>,
-      <Button key="forward" type="primary" onClick={() => this.handleNext(currentStep)}>
-        下一步
-      </Button>,
-    ];
-  };
-
-  render() {
-    const { updateModalVisible, handleUpdateModalVisible, values } = this.props;
-    const { currentStep, formVals } = this.state;
-
-    return (
-      <Modal
-        width={640}
-        bodyStyle={{ padding: '32px 40px 48px' }}
-        destroyOnClose
-        title="规则配置"
-        visible={updateModalVisible}
-        footer={this.renderFooter(currentStep)}
-        onCancel={() => handleUpdateModalVisible(false, values)}
-        afterClose={() => handleUpdateModalVisible()}
-      >
-        <Steps style={{ marginBottom: 28 }} size="small" current={currentStep}>
-          <Step title="基本信息" />
-          <Step title="配置规则属性" />
-          <Step title="设定调度周期" />
-        </Steps>
-        {this.renderContent(currentStep, formVals)}
-      </Modal>
-    );
-  }
-}
 
 /* eslint react/no-multi-comp:0 */
 @connect(({ video, loading }) => ({
@@ -285,8 +48,12 @@ class TableList extends PureComponent {
     expandForm: false,
     selectedRows: [],
     formValues: {},
-    stepFormValues: {},
+    PreviewVideo: {},
   };
+  params={
+    currentPage: 1,
+    pageSize: 10,
+  }
 
   columns = [
     {
@@ -309,11 +76,11 @@ class TableList extends PureComponent {
       title: '操作',
       render: (text, record) => (
         <Fragment>
-          <a onClick={() => this.handleUpdateModalVisible(true, record)}>预览</a>
+          <a onClick={() => this.handlePreviewModalVisible(true, record)}>预览</a>
           <Divider type="vertical" />
-          <a href="">编辑</a>
+          <a onClick={() => this.handleModalVisible(true,record)}>编辑</a>
           <Divider type="vertical" />
-          <a href="">删除</a>
+          <a onClick={() => this.deleteItem(record)}>删除</a>
         </Fragment>
       ),
     },
@@ -323,76 +90,73 @@ class TableList extends PureComponent {
     const { dispatch } = this.props;
     dispatch({
       type: 'video/fetch',
+      payload: this.params,
     });
   }
 
-  handleStandardTableChange = (pagination, filtersArg, sorter) => {
+  handleStandardTableChange = (pagination) => {
     const { dispatch } = this.props;
-    const { formValues } = this.state;
-
-    const filters = Object.keys(filtersArg).reduce((obj, key) => {
-      const newObj = { ...obj };
-      newObj[key] = getValue(filtersArg[key]);
-      return newObj;
-    }, {});
-
-    const params = {
+    this.params = {
       currentPage: pagination.current,
       pageSize: pagination.pageSize,
-      ...formValues,
-      ...filters,
     };
-    if (sorter.field) {
-      params.sorter = `${sorter.field}_${sorter.order}`;
-    }
-
     dispatch({
       type: 'video/fetch',
-      payload: params,
+      payload: this.params,
     });
   };
 
-  handleFormReset = () => {
+  reLoad = () => {
     const { form, dispatch } = this.props;
-    form.resetFields();
-    this.setState({
-      formValues: {},
-    });
     dispatch({
       type: 'video/fetch',
-      payload: {},
+      payload: this.params,
     });
   };
-
-  toggleForm = () => {
-    const { expandForm } = this.state;
-    this.setState({
-      expandForm: !expandForm,
-    });
-  };
-
-  handleMenuClick = e => {
-    const { dispatch } = this.props;
+  deleteItem = (item) => {
+    const { dispatch, form } = this.props;
     const { selectedRows } = this.state;
+    const values = item.id?[item]:selectedRows
 
-    if (selectedRows.length === 0) return;
-    switch (e.key) {
-      case 'remove':
+    Modal.confirm({
+      title: '删除视频',
+      content: '确认删除所选视频吗？确认后无法恢复！',
+      okText: '确定',
+      cancelText: '取消',
+      onOk: () => {
         dispatch({
-          type: 'video/remove',
-          payload: {
-            key: selectedRows.map(row => row.key),
-          },
-          callback: () => {
-            this.setState({
-              selectedRows: [],
-            });
+          type: 'video/delete',
+          payload: {values,...this.params},
+          callback: response => {
+            message[response.msgType](response.msg);
+            if (response.success) {
+              this.cleanSelectedRows();
+            }
           },
         });
-        break;
-      default:
-        break;
-    }
+      },
+    });
+  };
+  empty = () => {
+    const { dispatch, form } = this.props;
+    Modal.confirm({
+      title: '清空视频',
+      content: '确认清空所有视频吗？确认后无法恢复！请谨慎操作！',
+      okText: '确定',
+      cancelText: '取消',
+      onOk: () => {
+        dispatch({
+          type: 'video/empty',
+          payload: this.params,
+          callback: response => {
+            message[response.msgType](response.msg);
+            if (response.success) {
+              this.cleanSelectedRows();
+            }
+          },
+        });
+      },
+    });
   };
 
   handleSelectRows = rows => {
@@ -400,86 +164,68 @@ class TableList extends PureComponent {
       selectedRows: rows,
     });
   };
-
-  handleSearch = e => {
-    e.preventDefault();
-
-    const { dispatch, form } = this.props;
-
-    form.validateFields((err, fieldsValue) => {
-      if (err) return;
-
-      const values = {
-        ...fieldsValue,
-        updatedAt: fieldsValue.updatedAt && fieldsValue.updatedAt.valueOf(),
-      };
-
-      this.setState({
-        formValues: values,
-      });
-
-      dispatch({
-        type: 'video/fetch',
-        payload: values,
-      });
+  cleanSelectedRows = () => {
+    this.setState({
+      selectedRows: [],
     });
   };
 
-  handleModalVisible = flag => {
+  handleModalVisible = (flag,item) => {
     this.setState({
       modalVisible: !!flag,
+      formValues: item,
     });
   };
 
-  handleUpdateModalVisible = (flag, record) => {
+  handlePreviewModalVisible = (flag, record) => {
     this.setState({
       updateModalVisible: !!flag,
-      stepFormValues: record || {},
+      PreviewVideo: record || {},
     });
   };
 
-  handleAdd = fields => {
+  handleSubmit = fieldsValue => {
     const { dispatch } = this.props;
     dispatch({
-      type: 'video/add',
+      type: 'video/submit',
       payload: {
-        desc: fields.desc,
+        ...this.params,
+        ...fieldsValue
       },
     });
-
-    message.success('添加成功');
+    message[response.msgType](response.msg);
     this.handleModalVisible();
   };
 
-  handleUpdate = fields => {
-    const { dispatch } = this.props;
-    dispatch({
-      type: 'video/update',
-      payload: {
-        name: fields.name,
-        desc: fields.desc,
-        key: fields.key,
-      },
-    });
+  // handleUpdate = fieldsValue => {
+  //   const { dispatch } = this.props;
+  //   dispatch({
+  //     type: 'video/submit',
+  //     payload: {
+  //       name: fields.name,
+  //       desc: fields.desc,
+  //       key: fields.key,
+  //     },
+  //   });
 
-    message.success('配置成功');
-    this.handleUpdateModalVisible();
-  };
+  //   message.success('配置成功');
+  //   this.handlePreviewModalVisible();
+  // };
 
   render() {
     const {
       video: { data },
       loading,
     } = this.props;
-    const { selectedRows, modalVisible, updateModalVisible, stepFormValues } = this.state;
+    const { selectedRows, modalVisible, updateModalVisible, PreviewVideo, formValues } = this.state;
 
     const parentMethods = {
-      handleAdd: this.handleAdd,
+      handleSubmit: this.handleSubmit,
       handleModalVisible: this.handleModalVisible,
     };
-    const updateMethods = {
-      handleUpdateModalVisible: this.handleUpdateModalVisible,
-      handleUpdate: this.handleUpdate,
+    const previewMethods = {
+      handlePreviewModalVisible: this.handlePreviewModalVisible,
+      handlePreview: this.handlePreview,
     };
     return (
       <Fragment >
@@ -491,11 +237,11 @@ class TableList extends PureComponent {
               </Button>
               {selectedRows.length > 0 && (
                 <span>
-                  <Button type="primary">视频播放预览</Button>
+                  <Button type="primary" onClick={() => this.handlePreviewModalVisible(true,selectedRows)}>视频播放预览</Button>
                 </span>
               )}
-              <Button>刷新</Button>
-              <Button>清空</Button>
+              <Button onClick={this.reLoad}>刷新</Button>
+              <Button onClick={this.empty}>清空</Button>
             </div>
             <StandardTable
               selectedRows={selectedRows}
@@ -504,17 +250,17 @@ class TableList extends PureComponent {
               columns={this.columns}
               onSelectRow={this.handleSelectRows}
               onChange={this.handleStandardTableChange}
+              deleteItem={this.deleteItem}
+
             />
           </div>
         </Card>
-        <CreateForm {...parentMethods} modalVisible={modalVisible} />
-        {stepFormValues && Object.keys(stepFormValues).length ? (
-          <UpdateForm
-            {...updateMethods}
-            updateModalVisible={updateModalVisible}
-            values={stepFormValues}
-          />
-        ) : null}
+        <UploadForm {...parentMethods} modalVisible={modalVisible} formValues={formValues} />
+        {updateModalVisible&&<PreviewForm
+          {...previewMethods}
+          updateModalVisible={updateModalVisible}
+          values={PreviewVideo}
+        />}
       </Fragment>
     );
   }
