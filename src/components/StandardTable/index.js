@@ -83,7 +83,7 @@ class StandardTable extends PureComponent {
     return (
       <div className={styles.standardTable}>
         <div className={styles.tableAlert}>
-          <Alert
+          {selectedRowKeys.length<0&&<Alert
             message={
               <Fragment>
                 已选择 <a style={{ fontWeight: 600 }}>{selectedRowKeys.length}</a> 项&nbsp;&nbsp;
@@ -97,22 +97,30 @@ class StandardTable extends PureComponent {
                   </span>
                 ))}
                 <a onClick={this.cleanSelectedKeys} style={{ marginLeft: 24 }}>
-                  清空
+                  批量删除
                 </a>
               </Fragment>
             }
             type="info"
             showIcon
-          />
+          />}
         </div>
+        <div className = {styles.customTable}>
         <Table
           rowKey={rowKey || 'key'}
           rowSelection={rowSelection}
           dataSource={list}
           pagination={paginationProps}
           onChange={this.handleTableChange}
+          rowClassName={(record, index) => {
+            let className = 'single-row';
+            if (index % 2 === 1) {
+              className = 'double-row';
+            }
+            return className;
+          }}
           {...rest}
-        />
+        /></div>
       </div>
     );
   }

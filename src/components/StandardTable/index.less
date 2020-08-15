@@ -1,13 +1,122 @@
 @import '~antd/lib/style/themes/default.less';
 
-.standardTable {
+.customTable {
+  /* Table */
   :global {
+    .ant-table {
+      color: #22282e;
+    }
+    .ant-table-thead {
+      font-size: 14px;
+    }
+    tr.ant-table-expanded-row, tr.ant-table-expanded-row:hover {
+     background: #ffffff
+    }
+    .ant-table-thead > tr > th {
+      color: #22282e;
+      font-weight: bold;
+      background-color: #fff;
+      border-bottom: 2px solid #f3f7fd;
+    }
+    .ant-table-thead > tr > th,
+    .ant-table-tbody > tr > td {
+      padding: 9px 9px;
+    }
+    .ant-table-tbody > tr > td {
+      border-bottom: none;
+    }
+    .ant-table-tbody > tr > td > a {
+      color: #267ee5;
+    }
+    .ant-checkbox-input {
+      width: 14px;
+      height: 14px;
+    }
+    .ant-checkbox-inner {
+      width: 14px;
+      height: 14px;
+    }
     .ant-table-pagination {
-      margin-top: 24px;
+      margin: 16px 24px;
+    }
+    .ant-pagination-total-text {
+      float: left;
+    }
+    .ant-pagination-item {
+      border-radius: 2px;
+    }
+    .ant-pagination-item-active {
+      background: #198fed;
+      color: #fff;
+    }
+    .ant-pagination-item-active > a {
+      color: #fff;
+    }
+    .single-row {
+      background-color: #fafafa;
+    }
+    .double-row {
+      background-color: #fff;
+    }
+    .ant-tag-red {
+      color: #fff;
+      background: #d9534f;
+      border-color: #d9534f;
+    }
+    .ant-tag-blue {
+      color: #fff;
+      background: #1890ff;
+      border-color: #1890ff;
+    }
+    .ant-tag-orange {
+      color: #fff;
+      background: #eb7839;
+      border-color: #eb7839;
     }
   }
+}
 
-  .tableAlert {
-    margin-bottom: 16px;
+.customAlert {
+  /* Alert */
+  :global {
+    .ant-alert {
+      margin-bottom: 12px;
+      border-radius: 2px;
+      padding: 4px 15px 4px 37px;
+    }
+    .ant-alert-icon {
+      position: absolute;
+      top: 7.5px;
+      left: 16px;
+    }
+    .ant-alert-info {
+      background-color: #e6f7ff;
+      border: 1px solid #bae7ff;
+    }
+    .ant-alert-info > span {
+      font-size: 14px;
+      color: #4e4e4e;
+    }
+    .ant-alert-info > span > a {
+      color: #198fed;
+    }
+  }
+}
+.customFilterOperation {
+  margin-bottom: 12px;
+  button {
+    margin-right: 12px;
+    width: 60px;
+    border-radius: 2px;
+  }
+}
+.customTableicon {
+  :global {
+    .ant-table .ant-table-row-indent + .ant-table-row-expand-icon {
+      display: none;
+    }
+    .ant-table-tbody{
+      word-break: break-all;
+    }
   }
 }

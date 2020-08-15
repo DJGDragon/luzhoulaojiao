@@ -23,13 +23,13 @@ export default [
         path: '/play',
         name: 'play',
         // icon: 'dashboard',
-        component: './Dashboard/Analysis',
+        component: './Video/Play',
       },
       {
         path: '/manage',
         name: 'manage',
         // icon: 'dashboard',
-        component: './List/TableList',
+        component: './Video/TableList',
       },
       // {
       //   path: '/dashboard',
