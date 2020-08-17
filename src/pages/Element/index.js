@@ -24,6 +24,7 @@ import {
 } from 'antd';
 import Slider from "react-slick";
 
+import styles from './index.less';
 
 
 class TableList extends Component {
@@ -52,7 +53,7 @@ class TableList extends Component {
     const { selectedRows, modalVisible, updateModalVisible, PreviewVideo, formValues } = this.state;
 
     return (
-      <div>
+      <div style={{margin:24}}>
         <h2>Slider Syncing (AsNavFor)</h2>
         <h4>First Slider</h4>
         <Slider
