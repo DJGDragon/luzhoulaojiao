@@ -1,5 +1,3 @@
-import fetch from 'dva/fetch';
-
 export const dva = {
   config: {
     onError(err) {
@@ -8,11 +6,16 @@ export const dva = {
   },
 };
 
-let authRoutes = null;
+const authRoutes = {};
 
 function ergodicRoutes(routes, authKey, authority) {
   routes.forEach(element => {
     if (element.path === authKey) {
+      if (!element.authority) {
+        // eslint-disable-next-line no-param-reassign
+        element.authority = [];
+      }
+      // eslint-disable-next-line compat/compat
       Object.assign(element.authority, authority || []);
     } else if (element.routes) {
       ergodicRoutes(element.routes, authKey, authority);
@@ -28,11 +31,17 @@ export function patchRoutes(routes) {
   window.g_routes = routes;
 }
 
-export function render(oldRender) {
-  fetch('/api/auth_routes')
-    .then(res => res.json())
-    .then(ret => {
-      authRoutes = ret;
-      oldRender();
-    });
-}
+// https://umijs.org/zh/guide/runtime-config.html#render
+// export function render(oldRender) {
+//   fetch('/api/auth_routes')
+//     .then(res => res.json())
+//     .then(
+//       ret => {
+//         authRoutes = ret;
+//         oldRender();
+//       },
+//       () => {
+//         oldRender();
+//       }
+//     );
+// }

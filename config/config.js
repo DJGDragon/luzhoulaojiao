@@ -77,7 +77,7 @@ export default {
   proxy: {
     '/api/': {
       // target: 'https://preview.pro.ant.design/',
-      target: 'http://192.168.0.104:8090',
+      target: 'http://192.168.24.87:8082',
       changeOrigin: true,
       pathRewrite: { '^/server': '' },
     },

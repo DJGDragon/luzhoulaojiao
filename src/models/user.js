@@ -17,7 +17,9 @@ export default {
       });
     },
     *fetchCurrent(_, { call, put }) {
-      const response = yield call(queryCurrent);
+      // const response = yield call(queryCurrent);
+      const response = { name: 'Serati Ma',}
+      
       yield put({
         type: 'saveCurrentUser',
         payload: response,
