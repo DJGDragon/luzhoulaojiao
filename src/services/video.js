@@ -12,13 +12,25 @@ export async function submitVideo(params) {
       }
 
   }
-  return request('/api/video/submit', {
+  return request('/video/submit', {
     method: 'POST',
     body: formData,
   });
 }
 export async function queryVideo(params) {
-  return request('/api/video/query', {
+  return request('/video/query', {
+    method: 'POST',
+    body: params,
+  });
+}
+export async function deleteVideo(params) {
+  return request('/video/delete', {
+    method: 'POST',
+    body: params,
+  });
+}
+export async function emptyVideo(params) {
+  return request('/video/empty', {
     method: 'POST',
     body: params,
   });

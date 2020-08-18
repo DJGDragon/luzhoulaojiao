@@ -1,5 +1,5 @@
 import { queryRule, removeRule, updateRule } from '@/services/api';
-import { queryVideo, submitVideo } from '@/services/video';
+import { queryVideo, submitVideo,deleteVideo, emptyVideo} from '@/services/video';
 
 export default {
   namespace: 'video',
@@ -44,7 +44,7 @@ export default {
       if (callback) callback();
     },
     *delete({ payload, callback }, { call, put }) {
-      const response = yield call(queryVideo, payload);
+      const response = yield call(deleteVideo, payload);
       yield put({
         type: 'save',
         payload: response,
@@ -52,7 +52,7 @@ export default {
       if (callback) callback();
     },
     *empty({ payload, callback }, { call, put }) {
-      const response = yield call(queryVideo, payload);
+      const response = yield call(emptyVideo, payload);
       yield put({
         type: 'save',
         payload: response,
